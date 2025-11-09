@@ -1,0 +1,60 @@
+# === Node.js ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+
+# === Environment & Config ===
+.env
+.env.local
+.env.*.local
+
+# === IDE / Editor ===
+.vscode/
+.idea/
+*.swp
+*~
+
+# === OS Files ===
+.DS_Store
+Thumbs.db
+
+# === Logs & Dumps ===
+logs
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.seed
+*.gz
+*.tgz
+
+# === Coverage & Testing ===
+coverage/
+.nyc_output/
+lib-cov/
+
+# === Build Outputs ===
+dist/
+build/
+tmp/
+temp/
+.cache/
+.parcel-cache/
+.next/
+out/
+public/js/bundle.js
+public/js/bundle.js.map
+
+# === Misc ===
+*.iml
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.local

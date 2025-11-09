@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chat — ProgWeb I</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">💬</span>
+      <h1>Chat — ProgWeb I</h1>
+    </div>
+    <a class="ghost-link" href="index.html">← Volver</a>
+  </header>
+
+  <main class="container">
+    <section class="card chat-card">
+      <div class="card-header">
+        <div class="actions" style="margin: 0 0 10px 0;">
+            <button id="enable-sound" class="btn subtle">🔊 Activar sonido</button>
+        </div>
+        <h2>Canal general</h2>
+        <span class="chip" id="user-count">Usuarios conectados: 0</span>
+      </div>
+
+      <div id="chat" class="chat-box"></div>
+
+      <div id="typing" class="typing"></div>
+
+      <div class="chat-input">
+        <input id="msg" placeholder="Escribe un mensaje…" autocomplete="off" />
+        <button id="send" class="btn primary">Enviar ↵</button>
+      </div>
+    </section>
+  </main>
+
+  <audio id="notif" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_67bfe4b48d.mp3?filename=notification-3-18399.mp3"></audio>
+
+  <footer class="footer"><small>© Brenda Lopes — ProgWeb I</small></footer>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script>
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert("Debes iniciar sesión");
+    location.href = "index.html";
+  }
+
+  const box = document.getElementById('chat');
+  const typingBox = document.getElementById('typing');
+  const count = document.getElementById('user-count');
+  const input = document.getElementById('msg');
+  const sendBtn = document.getElementById('send');
+  const audio = document.getElementById('notif');
+  const btnSound = document.getElementById('enable-sound');
+
+  // --- Socket con JWT
+  const socket = io("http://localhost:4000", { auth: { token } });
+
+  // --- Helpers UI
+  const scroll = () => { box.scrollTop = box.scrollHeight; };
+  const ping = () => {
+    if (!window.soundEnabled) return;
+    const s = audio.cloneNode(true);
+    // intentar reproducir sin bloquear la UI
+    s.play().catch(() => {});
+  };
+  const addMsg = (html) => {
+    box.insertAdjacentHTML('beforeend', html);
+    scroll();
+    ping();
+  };
+
+  // --- Sonido: desbloqueo por interacción y toggle
+  window.soundEnabled = false;
+  btnSound.addEventListener('click', async () => {
+    try {
+      // "desbloquear" el elemento de audio por gesto del usuario
+      await audio.play();
+      audio.pause();
+      audio.currentTime = 0;
+      window.soundEnabled = !window.soundEnabled;
+      btnSound.textContent = window.soundEnabled ? "🔊 Sonido activado" : "🔇 Activar sonido";
+      btnSound.classList.toggle('ok', window.soundEnabled);
+    } catch (e) {
+      alert("Tu navegador bloqueó el sonido automático. Vuelve a pulsar para activarlo.");
+    }
+  });
+
+  // --- Estado local (mi socket.id)
+  let myId = null;
+  socket.on('connect', () => { myId = socket.id; });
+
+  // --- Eventos de servidor
+  socket.on('userCount', (n) => { count.textContent = "Usuarios conectados: " + n; });
+
+  socket.on('chat:message', (m) => {
+    const mine = (m.senderId && m.senderId === myId) ? 'mine' : '';
+    addMsg(
+      `
+      <div class="msg ${mine}" style="border-color:${m.color}">
+        <div class="msg-meta">
+          <span class="user" style="color:${mine ? 'inherit' : m.color}">${m.user}</span>
+          <small class="time">${new Date(m.at).toLocaleTimeString()}</small>
+        </div>
+        <div class="msg-text">${m.text}</div>
+      </div>
+      `
+    );
+  });
+
+  socket.on('system', (m) => {
+    const color = m.type === 'join' ? '#10b981' : '#ef4444';
+    const icon = m.type === 'join' ? '🟢' : '🔴';
+    addMsg(
+      `<div class="system" style="color:${color}">${icon} ${m.user} se ha ${m.type === 'join' ? 'unido' : 'salido'} del chat</div>`
+    );
+  });
+
+  socket.on('typing', (user) => {
+    typingBox.textContent = `${user} está escribiendo...`;
+    clearTimeout(window.typingTimeout);
+    window.typingTimeout = setTimeout(() => typingBox.textContent = "", 1500);
+  });
+
+  // --- Enviar mensaje
+  const send = () => {
+    const text = input.value.trim();
+    if (!text) return;
+    socket.emit('chat:message', text);
+    input.value = "";
+  };
+  sendBtn.onclick = send;
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') send();
+    socket.emit('typing');
+  });
+</script>
+
+</body>
+</html>

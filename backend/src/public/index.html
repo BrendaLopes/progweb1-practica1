@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ProgWeb I — Práctica 1 (Brenda)</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1>ProgWeb I — Práctica 1</h1>
+    </div>
+    <a class="ghost-link" href="https://github.com/dperezalvarez?tab=repositories" target="_blank" rel="noreferrer">Repos de clase ↗</a>
+  </header>
+
+  <main class="container">
+    <!-- AUTH -->
+    <section class="card">
+      <div class="card-header">
+        <h2>🔐 Autenticación</h2>
+        <span class="chip" id="status-chip">offline</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="name">Nombre</label>
+          <input id="name" placeholder="Brenda Lopes" />
+        </div>
+
+        <div class="field">
+          <label for="role">Rol</label>
+          <select id="role">
+            <option>user</option>
+            <option>admin</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="brenda@example.com" />
+        </div>
+
+        <div class="field">
+          <label for="pass">Password</label>
+          <input id="pass" type="password" placeholder="••••••" />
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btn-register" class="btn primary">Crear cuenta</button>
+        <button id="btn-login" class="btn">Iniciar sesión</button>
+        <a class="btn subtle" href="chat.html">Ir al chat 💬</a>
+      </div>
+
+      <pre id="auth-out" class="console"></pre>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>🛒 Productos</h2>
+      </div>
+
+      <div class="actions">
+        <button id="btn-load" class="btn">Cargar productos</button>
+        <button id="btn-new" class="btn primary">Crear producto (admin)</button>
+      </div>
+
+      <ul id="list" class="list"></ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>© Brenda Lopes — ProgWeb I</small>
+  </footer>
+
+  <script>
+    const chip = document.getElementById('status-chip');
+    const setChip = () => {
+      const hasToken = !!localStorage.getItem('token');
+      chip.textContent = hasToken ? 'online' : 'offline';
+      chip.classList.toggle('ok', hasToken);
+    };
+    setChip();
+    window.addEventListener('storage', setChip);
+  </script>
+  <script src="main.js"></script>
+</body>
+</html>
