@@ -64,7 +64,7 @@ body{
 .btn.primary{background:var(--primary); border-color:var(--primary); color:var(--primary-ink); font-weight:600}
 .btn.subtle{opacity:.85}
 .btn.subtle:hover{opacity:1}
-.btn.ok{ /* para el botón de sonido cuando está activado */
+.btn.ok{ 
   background:rgba(16,185,129,.18); border-color:rgba(16,185,129,.35); color:#0bb981;
 }
 
@@ -73,11 +73,8 @@ body{
   background:rgba(255,255,255,.03); color:var(--muted);
 }
 .chip.ok{background:rgba(16,185,129,.15); color:#0bb981; border-color:rgba(16,185,129,.3)}
-
-/* Texto auxiliar usado en la lista */
 .muted{ color:var(--muted); font-size:.9rem; margin-top:4px }
 
-/* Consola JSON */
 .console{
   margin-top:12px; background:#0b0d12; color:#a7f3d0; padding:12px; border-radius:12px; border:1px solid var(--border);
   max-height:220px; overflow:auto; white-space:pre-wrap; word-break:break-word; max-width:100%;
@@ -106,7 +103,6 @@ body{
 }
 .chat-input input:focus{border-color:var(--accent)}
 
-/* Burbujas */
 .msg{
   max-width:78%; padding:10px 12px; border-radius:12px; border:1px solid var(--border);
   background:rgba(255,255,255,.03); align-self:flex-start; box-shadow:var(--shadow);
@@ -121,7 +117,7 @@ body{
 .system{text-align:center; font-size:.85rem; opacity:.85; margin:6px 0}
 .msg .msg-meta small{opacity:.7; margin-left:6px}
 
-/* Detalles responsivos extra */
+/* Detalles responsivos*/
 @media (max-width:480px){
   .msg{max-width:90%}
   .card{padding:16px}

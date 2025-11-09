@@ -64,7 +64,6 @@
   const ping = () => {
     if (!window.soundEnabled) return;
     const s = audio.cloneNode(true);
-    // intentar reproducir sin bloquear la UI
     s.play().catch(() => {});
   };
   const addMsg = (html) => {
@@ -73,11 +72,9 @@
     ping();
   };
 
-  // --- Sonido: desbloqueo por interacción y toggle
   window.soundEnabled = false;
   btnSound.addEventListener('click', async () => {
     try {
-      // "desbloquear" el elemento de audio por gesto del usuario
       await audio.play();
       audio.pause();
       audio.currentTime = 0;
@@ -89,11 +86,9 @@
     }
   });
 
-  // --- Estado local (mi socket.id)
   let myId = null;
   socket.on('connect', () => { myId = socket.id; });
 
-  // --- Eventos de servidor
   socket.on('userCount', (n) => { count.textContent = "Usuarios conectados: " + n; });
 
   socket.on('chat:message', (m) => {
